@@ -1,0 +1,11 @@
+{
+  // Cloudflare config: serves this folder as a static site (used when Cloudflare deploys this as a Worker; Pages ignores it)
+  "name": "culture-barbershop",
+  "compatibility_date": "2025-06-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "404-page"
+  }
+}
