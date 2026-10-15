@@ -97,7 +97,15 @@
     if (!v.canPlayType('video/mp4; codecs="avc1.640028"')) src = src.replace('.mp4', '.webm');
     var target = 0, cur = 0, ready = false;
     if (!reduce){
-      v.src = src; v.muted = true; v.load();
+      v.muted = true;
+      // Load the whole clip into memory first: a blob URL is always seekable,
+      // whatever range headers the host sends, so scroll scrubbing stays smooth.
+      var direct = function(){ v.src = src; v.load(); };
+      if (window.fetch && window.URL && URL.createObjectURL){
+        fetch(src).then(function(r){ if (!r.ok) throw 0; return r.blob(); })
+          .then(function(b){ v.src = URL.createObjectURL(b); v.load(); })
+          .catch(direct);
+      } else direct();
       var prime = function(){ var p = v.play(); if (p && p.then) p.then(function(){ v.pause(); }).catch(function(){}); };
       v.addEventListener('loadedmetadata', function(){ ready = true; prime(); });
       window.addEventListener('touchstart', prime, {once:true, passive:true});
