@@ -94,8 +94,8 @@
     var bar = hero.querySelector('.hero-progress span');
     var small = window.matchMedia('(max-width: 760px)').matches;
     var src = small ? v.getAttribute('data-src-sm') : v.getAttribute('data-src');
-    if (!v.canPlayType('video/mp4; codecs="avc1.640028"')) src = src.replace('.mp4', '.webm');
-    if (small){ var ps = 'media/hero-poster-sm.jpg'; v.poster = ps; var pi = hero.querySelector('.poster'); if (pi) pi.src = ps; }
+    if (!v.canPlayType('video/mp4; codecs="avc1.640028"')) src = src.replace('.mp4?', '.webm?');
+    if (small){ var ps = 'media/hero-poster-sm.jpg?v=3'; v.poster = ps; var pi = hero.querySelector('.poster'); if (pi) pi.src = ps; }
     var target = 0, cur = 0, ready = false;
     if (!reduce){
       v.muted = true;
