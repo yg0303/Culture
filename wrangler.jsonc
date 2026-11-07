@@ -5,6 +5,11 @@
   "compatibility_date": "2025-06-01",
   "workers_dev": true,
   "preview_urls": true,
+  // Live domain (bought on Cloudflare): both addresses serve this site
+  "routes": [
+    { "pattern": "culturebarbershopbkk.com", "custom_domain": true },
+    { "pattern": "www.culturebarbershopbkk.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
