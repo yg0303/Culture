@@ -165,7 +165,7 @@ p{margin:0}
 .feature-cut ul{list-style:none;padding:0;margin:18px 0 24px;display:flex;flex-wrap:wrap;gap:8px}
 .feature-cut li{font:600 12px/1 var(--mono);letter-spacing:.08em;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
 .menu-side{display:grid;gap:20px}
-@media (max-width:860px){.menu-grid{grid-template-columns:1fr}}
+@media (max-width:860px){.menu-grid{grid-template-columns:1fr;gap:20px}.menu-side{display:contents}.menu-grid .feature-cut{order:-1}}
 
 /* ---------- barbers: cut-out portraits stand taller than their card so they pop out of it ---------- */
 .barbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2.4vw,28px);padding-top:clamp(70px,9vw,110px)}
