@@ -7,30 +7,11 @@
     phone: '093 183 3522',
     line: 'https://lin.ee/y9wMJFP',
     ig: 'https://www.instagram.com/culturebarbershop___/',
-    maps: 'https://www.google.com/maps/search/?api=1&query=CULTURE+BARBERSHOP+Sukhumvit+89',
+    maps: 'https://www.google.com/maps/place/CULTURE+BARBERSHOP+Sukhumvit+89/@13.7007611,100.6036198,17z',
+    book: 'https://www.fresha.com/a/culture-barbershop-sukhumvit-89-bangkok-2249-sukhumvit-89-alley-f60gp0az/booking?pId=3025168',
     open: 10, close: 22               // every day, 10:00–22:00 (Bangkok time)
   };
   window.CULTURE = SHOP;
-
-  /* ---------- bear mascot (original artwork) ---------- */
-  var BEAR = '<svg viewBox="0 0 200 200" aria-hidden="true">' +
-    '<g stroke="#07080c" stroke-width="6" stroke-linejoin="round">' +
-    '<circle cx="50" cy="60" r="27" fill="#6a4328"/><circle cx="150" cy="60" r="27" fill="#6a4328"/>' +
-    '<circle cx="50" cy="60" r="12" fill="#3a2416" stroke-width="0"/><circle cx="150" cy="60" r="12" fill="#3a2416" stroke-width="0"/>' +
-    '<path d="M30 110 C30 62 62 40 100 40 C138 40 170 62 170 110 C170 150 140 176 100 176 C60 176 30 150 30 110 Z" fill="#7a4e2f"/>' +
-    '</g>' +
-    '<path d="M34 100 C34 60 64 42 100 42 C136 42 166 60 166 100 L158 96 C150 76 128 70 100 70 C72 70 50 76 42 96 Z" fill="#101118"/>' +
-    '<path d="M42 96 L42 116 L36 112 Z M158 96 L158 116 L164 112 Z" fill="#101118" opacity=".55"/>' +
-    '<path d="M60 64 L76 56 M86 52 L102 48 M112 50 L128 54" stroke="#3d6bff" stroke-width="3" stroke-linecap="round" opacity=".9"/>' +
-    '<path d="M60 98 L86 104 M140 98 L114 104" stroke="#07080c" stroke-width="7" stroke-linecap="round"/>' +
-    '<ellipse cx="76" cy="114" rx="7" ry="8" fill="#07080c"/><ellipse cx="124" cy="114" rx="7" ry="8" fill="#07080c"/>' +
-    '<circle cx="78.5" cy="111" r="2.4" fill="#fff"/><circle cx="126.5" cy="111" r="2.4" fill="#fff"/>' +
-    '<ellipse cx="100" cy="144" rx="36" ry="27" fill="#d8b085" stroke="#07080c" stroke-width="5"/>' +
-    '<path d="M86 128 C86 120 114 120 114 128 C114 136 104 141 100 141 C96 141 86 136 86 128 Z" fill="#07080c"/>' +
-    '<path d="M88 154 C96 160 108 159 116 150" fill="none" stroke="#07080c" stroke-width="4.5" stroke-linecap="round"/>' +
-    '<path d="M60 176 C72 186 128 186 140 176" fill="none" stroke="#c9ccd6" stroke-width="5" stroke-dasharray="6 5" stroke-linecap="round"/>' +
-    '</svg>';
-  document.querySelectorAll('[data-bear]').forEach(function(el){ el.innerHTML = BEAR; });
 
   /* ---------- header ---------- */
   var header = document.querySelector('.site-header');
@@ -189,149 +170,41 @@
     });
   }
 
-  /* ---------- booking widget ---------- */
-  var SERVICES = [
-    {id:'full', name:'Full Service Haircut', price:900, note:'Cut, beard, hot towel, line-up and wash'},
-    {id:'cut', name:'Haircut & Line-up', price:600},
-    {id:'beard', name:'Beard Trim & Line-up', price:400},
-    {id:'shave', name:'Beard & Mustache Shave', price:300},
-    {id:'wash', name:'Hair Wash & Style', price:200},
-    {id:'enh', name:'Hair Enhancements', price:200},
-    {id:'design', name:'Hair Design', price:200, from:true, upto:1000},
-    {id:'towel', name:'Hot Towel', price:100},
-    {id:'color', name:'Hair Coloring / Bleaching', price:2000, from:true},
-    {id:'perm', name:'Hair Perm', price:2000, from:true}
-  ];
-  var BARBERS = ['Any barber', 'Barber One', 'Barber Two', 'Barber Three'];
-  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  function baht(n){ return '฿' + n.toLocaleString('en-US'); }
-  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  /* ---------- live Google reviews (from /api/reviews, refreshed daily by worker.js) ---------- */
+  var strip = document.querySelector('[data-live-reviews]');
+  if (strip && window.fetch){
+    fetch('/api/reviews').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+      if (!d || !d.ok) return;                       // not set up yet → the built-in reviews stay
+      var esc = function(t){ return String(t || '').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+      var starStr = function(n){ n = Math.round(n || 0); return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); };
 
-  document.querySelectorAll('[data-booking]').forEach(function(root, k){
-    var compact = root.getAttribute('data-booking') === 'compact';
-    var today = bkkNow(); today.setHours(0,0,0,0);
-    var maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + 60);
-    var st = { svc: compact ? ['cut'] : ['cut'], barber: 'Any barber', date: null, time: null, view: new Date(today.getFullYear(), today.getMonth(), 1) };
-    var id = function(s){ return 'bk' + k + '-' + s; };
-    var preset = (location.hash || '').replace('#','');
-    if (preset && SERVICES.some(function(s){ return s.id === preset; })) st.svc = [preset];
-
-    root.className = 'booker';
-    root.innerHTML =
-      '<div class="step"><div class="step-h"><h3>Service</h3><span>' + (compact ? 'Pick one or more' : 'Step 1 · Pick one or more') + '</span></div><div class="opts" data-svc></div></div>' +
-      (compact ? '' : '<div class="step"><div class="step-h"><h3>Barber</h3><span>Step 2</span></div><div class="opts" data-barber></div></div>') +
-      '<div class="step"><div class="step-h"><h3>Date</h3><span>' + (compact ? '' : 'Step 3 · ') + 'Open every day</span></div><div class="cal"><div class="cal-head"><button type="button" data-prev aria-label="Previous month">‹</button><b data-month></b><button type="button" data-next aria-label="Next month">›</button></div><div class="cal-grid" data-grid></div></div></div>' +
-      '<div class="step"><div class="step-h"><h3>Time</h3><span data-timehint>Choose a date first</span></div><div class="slots" data-slots></div></div>' +
-      '<div class="fields"><div class="field"><label for="' + id('name') + '">Your name</label><input id="' + id('name') + '" autocomplete="name" placeholder="e.g. Somchai"></div>' +
-      '<div class="field"><label for="' + id('tel') + '">Phone (optional)</label><input id="' + id('tel') + '" autocomplete="tel" inputmode="tel" placeholder="08x xxx xxxx"></div></div>' +
-      (compact ? '' : '<div class="field"><label for="' + id('note') + '">Anything we should know? (optional)</label><textarea id="' + id('note') + '" rows="3" placeholder="Reference photo, hair type, the fade you want…"></textarea></div>') +
-      '<div class="summary"><div class="summary-line"><span data-sumtext>Haircut & Line-up</span><b data-total>฿600</b></div>' +
-      '<div class="err" data-err role="status" aria-live="polite"></div>' +
-      '<div class="actions"><a class="btn btn--wa" data-wa href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11 11 0 0 0 3.2 17.1L2 22l5-1.3A11 11 0 0 0 20.5 3.5ZM12 20.1a9 9 0 0 1-4.6-1.3l-.3-.2-3 .8.8-2.9-.2-.3A9.1 9.1 0 1 1 12 20.1Zm5-6.8c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.9 1.1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.5.8-1.6a.5.5 0 0 0 0-.5l-.9-2.1c-.2-.6-.5-.5-.6-.5h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>Book on WhatsApp</a>' +
-      '<a class="btn btn--ghost" href="' + SHOP.line + '" target="_blank" rel="noopener">Book on LINE</a></div>' +
-      '<p class="note">WhatsApp opens with your booking already written. Tap send and we confirm your chair. Walk-ins are welcome when a chair is free.</p></div>';
-
-    var $ = function(s){ return root.querySelector(s); };
-
-    // services
-    var svcBox = $('[data-svc]');
-    (compact ? SERVICES.slice(0, 6) : SERVICES).forEach(function(s){
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.dataset.id = s.id;
-      b.innerHTML = s.name + ' <span>' + (s.from ? 'from ' : '') + baht(s.price) + '</span>';
-      b.onclick = function(){
-        var i = st.svc.indexOf(s.id);
-        if (i > -1) { if (st.svc.length > 1) st.svc.splice(i, 1); }
-        else {
-          if (s.id === 'full') st.svc = ['full'];
-          else { st.svc = st.svc.filter(function(x){ return x !== 'full'; }); st.svc.push(s.id); }
-        }
-        render();
-      };
-      svcBox.appendChild(b);
-    });
-    // barbers
-    var bb = $('[data-barber]');
-    if (bb) BARBERS.forEach(function(n){
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = n;
-      b.onclick = function(){ st.barber = n; render(); }; bb.appendChild(b);
-    });
-    $('[data-prev]').onclick = function(){ st.view.setMonth(st.view.getMonth() - 1); render(); };
-    $('[data-next]').onclick = function(){ st.view.setMonth(st.view.getMonth() + 1); render(); };
-    root.addEventListener('input', update);
-
-    function render(){
-      svcBox.querySelectorAll('.opt').forEach(function(b){ b.setAttribute('aria-pressed', st.svc.indexOf(b.dataset.id) > -1 ? 'true' : 'false'); });
-      if (bb) bb.querySelectorAll('.opt').forEach(function(b){ b.setAttribute('aria-pressed', b.textContent === st.barber ? 'true' : 'false'); });
-      // calendar
-      var y = st.view.getFullYear(), m = st.view.getMonth();
-      $('[data-month]').textContent = MONTHS[m] + ' ' + y;
-      $('[data-prev]').disabled = (y === today.getFullYear() && m === today.getMonth());
-      $('[data-next]').disabled = (new Date(y, m + 1, 1) > maxDate);
-      var g = $('[data-grid]'); g.innerHTML = '';
-      DOW.forEach(function(d){ var e = document.createElement('div'); e.className = 'dow'; e.textContent = d; g.appendChild(e); });
-      var first = (new Date(y, m, 1).getDay() + 6) % 7;
-      for (var i = 0; i < first; i++) g.appendChild(document.createElement('span'));
-      var days = new Date(y, m + 1, 0).getDate();
-      for (var d = 1; d <= days; d++){
-        var dt = new Date(y, m, d);
-        var b = document.createElement('button'); b.type = 'button'; b.textContent = d;
-        b.setAttribute('aria-label', dt.toDateString());
-        if (dt < today || dt > maxDate) b.disabled = true;
-        if (dt.getTime() === today.getTime()) b.classList.add('is-today');
-        b.setAttribute('aria-pressed', st.date && dt.getTime() === st.date.getTime() ? 'true' : 'false');
-        (function(dt){ b.onclick = function(){ st.date = dt; st.time = null; render(); }; })(dt);
-        g.appendChild(b);
+      if (d.rating){
+        var sc = document.querySelector('[data-live-score]'); if (sc) sc.textContent = Number(d.rating).toFixed(1);
+        var st = document.querySelector('[data-live-stars]'); if (st){ st.textContent = starStr(d.rating); st.setAttribute('aria-label', Number(d.rating).toFixed(1) + ' out of 5 stars'); }
       }
-      // slots
-      var sl = $('[data-slots]'); sl.innerHTML = '';
-      if (st.date){
-        $('[data-timehint]').textContent = DOW[(st.date.getDay() + 6) % 7] + ' ' + st.date.getDate() + ' ' + MONTHS[st.date.getMonth()].slice(0,3);
-        var now = bkkNow(), isToday = st.date.getTime() === today.getTime();
-        var nowMin = now.getHours() * 60 + now.getMinutes();
-        for (var t = SHOP.open * 60; t <= (SHOP.close - 1) * 60; t += 30){
-          var s = document.createElement('button'); s.type = 'button';
-          var lbl = pad(Math.floor(t / 60)) + ':' + pad(t % 60); s.textContent = lbl;
-          if (isToday && t < nowMin + 30) s.disabled = true;
-          s.setAttribute('aria-pressed', st.time === lbl ? 'true' : 'false');
-          (function(lbl){ s.onclick = function(){ st.time = lbl; render(); }; })(lbl);
-          sl.appendChild(s);
-        }
-      } else { $('[data-timehint]').textContent = 'Choose a date first'; }
-      update();
-    }
+      if (d.total){ var ct = document.querySelector('[data-live-count]'); if (ct) ct.textContent = d.total + ' GOOGLE REVIEWS'; }
+      if (d.mapsUrl){ var mp = document.querySelector('[data-live-maps]'); if (mp) mp.href = d.mapsUrl; }
 
-    function chosen(){ return SERVICES.filter(function(s){ return st.svc.indexOf(s.id) > -1; }); }
-    function update(){
-      var list = chosen();
-      var total = list.reduce(function(a, s){ return a + s.price; }, 0);
-      var anyFrom = list.some(function(s){ return s.from; });
-      $('[data-sumtext]').textContent = list.map(function(s){ return s.name; }).join(' + ');
-      $('[data-total]').textContent = (anyFrom ? 'from ' : '') + baht(total);
-      var name = (root.querySelector('#' + id('name')).value || '').trim();
-      var tel = (root.querySelector('#' + id('tel')).value || '').trim();
-      var noteEl = root.querySelector('#' + id('note')); var note = noteEl ? noteEl.value.trim() : '';
-      var missing = [];
-      if (!st.date) missing.push('a date'); if (!st.time) missing.push('a time'); if (!name) missing.push('your name');
-      var wa = $('[data-wa]');
-      var dateTxt = st.date ? (DOW[(st.date.getDay() + 6) % 7] + ' ' + st.date.getDate() + ' ' + MONTHS[st.date.getMonth()] + ' ' + st.date.getFullYear()) : '';
-      var msg = 'Hi CULTURE BARBERSHOP, I would like to book a chair.\n\n' +
-        'Service: ' + list.map(function(s){ return s.name; }).join(', ') + '\n' +
-        'Barber: ' + st.barber + '\n' +
-        'Date: ' + dateTxt + '\n' +
-        'Time: ' + (st.time || '') + '\n' +
-        'Name: ' + name + (tel ? '\nPhone: ' + tel : '') + (note ? '\nNote: ' + note : '') +
-        '\n\nEstimated price: ' + (anyFrom ? 'from ' : '') + baht(total);
-      wa.href = 'https://wa.me/' + SHOP.wa + '?text=' + encodeURIComponent(msg);
-      wa.dataset.ok = missing.length ? '' : '1';
-      wa.dataset.missing = missing.join(', ');
-      if (!missing.length) $('[data-err]').textContent = '';
-    }
-    $('[data-wa]').addEventListener('click', function(e){
-      if (!this.dataset.ok){ e.preventDefault(); $('[data-err]').textContent = 'Add ' + this.dataset.missing + ' to send your booking.'; }
-    });
-    render();
-  });
+      // skip reviews already shown in the photo cards above
+      var shown = {};
+      document.querySelectorAll('.reviews .who > span').forEach(function(el){ shown[(el.firstChild.textContent || '').trim().split(' ')[0].toLowerCase()] = 1; });
+      var list = (d.reviews || []).filter(function(r){ return r.text && !shown[(r.name || '').split(' ')[0].toLowerCase()]; });
+      if (!list.length) return;
+
+      strip.innerHTML = list.map(function(r){
+        var name = r.profile ? '<a href="' + esc(r.profile) + '" target="_blank" rel="noopener">' + esc(r.name) + '</a>' : esc(r.name);
+        var pic = r.photo ? '<img class="avatar" src="' + esc(r.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
+        return '<article class="review"><div class="body">' +
+          '<span class="stars" aria-label="' + r.stars + ' out of 5 stars">' + starStr(r.stars) + '</span>' +
+          '<blockquote class="clamp">“' + esc(r.text) + '”</blockquote>' +
+          '<div class="who"><span class="who-name">' + pic + '<span>' + name + '<small>' + esc(r.when) + '</small></span></span>' +
+          '<a class="g-badge" href="' + esc(r.link || d.mapsUrl) + '" target="_blank" rel="noopener">GOOGLE</a></div>' +
+          '</div></article>';
+      }).join('');
+      strip.classList.add('is-live');
+      var note = document.querySelector('[data-live-note]'); if (note) note.textContent = 'Live from Google · updated daily';
+    }).catch(function(){});
+  }
 
   var y = document.querySelector('[data-year]'); if (y) y.textContent = new Date().getFullYear();
 })();

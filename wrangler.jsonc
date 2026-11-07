@@ -1,11 +1,19 @@
 {
-  // Cloudflare config: serves this folder as a static site (used when Cloudflare deploys this as a Worker; Pages ignores it)
+  // Cloudflare config: serves this folder as a static site, plus /api/reviews (live Google reviews) from worker.js
   "name": "culture-barbershop",
+  "main": "worker.js",
   "compatibility_date": "2025-06-01",
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
     "directory": "./",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/book", "/book.html"]
+  },
+  // Saved copy of the Google reviews (refreshed once a day, so Google stays free)
+  "kv_namespaces": [
+    { "binding": "REVIEWS", "id": "20479d250c394d91b83870a48de9c016" }
+  ]
+  // GOOGLE_API_KEY is a Secret set in the Cloudflare dashboard, never in this file.
 }
