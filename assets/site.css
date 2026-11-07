@@ -70,7 +70,7 @@ p{margin:0}
 /* logo: the C mark, with "ULTURE" set to sit on the C's baseline so it reads as one word */
 .logo{--h:28px;display:inline-flex;align-items:flex-end;line-height:1;color:var(--hex)}
 .logo-c{height:var(--h);width:auto;flex:none;filter:drop-shadow(0 0 14px rgba(61,107,255,.25))}
-.logo-word{font:400 calc(var(--h)*1.2)/.8 var(--logo);letter-spacing:.01em;margin-left:calc(var(--h)*.01);transform:translateY(calc(var(--h)*.075))}
+.logo-word{font:400 calc(var(--h)*1.2)/.8 var(--logo);letter-spacing:.01em;text-shadow:0 0 14px rgba(61,107,255,.25)}
 .logo-wrap{display:grid;gap:5px;justify-items:start}
 .logo-wrap small{display:block;font:600 8.5px/1 var(--mono);letter-spacing:.2em;color:var(--muted);white-space:nowrap}
 .brand:hover .logo-c{filter:drop-shadow(0 0 18px rgba(61,107,255,.6))}
