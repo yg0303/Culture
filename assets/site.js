@@ -7,7 +7,7 @@
     phone: '093 183 3522',
     line: 'https://lin.ee/y9wMJFP',
     ig: 'https://www.instagram.com/culturebarbershop___/',
-    maps: 'https://www.google.com/maps/place/CULTURE+BARBERSHOP+Sukhumvit+89/@13.7007611,100.6036198,17z',
+    maps: 'https://www.google.com/maps/place/CULTURE+BARBERSHOP+Sukhumvit+89/@13.7007611,100.6036198,17z/data=!3m1!4b1!4m6!3m5!1s0x30e29fedb9d79cb7:0xbc62ccfe419cfe51!8m2!3d13.7007611!4d100.6036198!16s%2Fg%2F11zfk663jd',
     book: 'https://www.fresha.com/a/culture-barbershop-sukhumvit-89-bangkok-2249-sukhumvit-89-alley-f60gp0az/booking?pId=3025168',
     open: 10, close: 22               // every day, 10:00–22:00 (Bangkok time)
   };

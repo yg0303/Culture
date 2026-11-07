@@ -54,6 +54,8 @@ p{margin:0}
 .btn--ghost:hover{border-color:var(--hex)}
 .btn--wa{background:#1fae5b;color:#fff}
 .btn--wa:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(31,174,91,.6)}
+.btn--line{background:#06c755;color:#fff}
+.btn--line:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(6,199,85,.6)}
 .btn svg{width:18px;height:18px;flex:none}
 
 /* header */
@@ -62,10 +64,11 @@ p{margin:0}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px}
 .brand{display:flex;align-items:center;text-decoration:none;color:var(--hex)}
 /* logo: the C mark, with "ULTURE" set to sit on the C's baseline so it reads as one word */
-.logo{--h:44px;display:inline-flex;align-items:flex-end;line-height:1;color:var(--hex)}
+.logo{--h:28px;display:inline-flex;align-items:flex-end;line-height:1;color:var(--hex)}
 .logo-c{height:var(--h);width:auto;flex:none;filter:drop-shadow(0 0 14px rgba(61,107,255,.25))}
-.logo-word{font:400 calc(var(--h)*.74)/.8 var(--logo);letter-spacing:.015em;margin-left:calc(var(--h)*.02);padding-bottom:calc(var(--h)*.015);transform:translateY(calc(var(--h)*.035))}
-.logo--xl{--h:clamp(74px,8vw,104px)}
+.logo-word{font:400 calc(var(--h)*1.2)/.8 var(--logo);letter-spacing:.01em;margin-left:calc(var(--h)*.01);transform:translateY(calc(var(--h)*.075))}
+.logo-wrap{display:grid;gap:5px;justify-items:start}
+.logo-wrap small{display:block;font:600 8.5px/1 var(--mono);letter-spacing:.2em;color:var(--muted);white-space:nowrap}
 .brand:hover .logo-c{filter:drop-shadow(0 0 18px rgba(61,107,255,.6))}
 .nav-links{display:flex;align-items:center;gap:6px;list-style:none;margin:0;padding:0}
 .nav-links a{display:block;padding:10px 14px;border-radius:999px;font:600 14px/1 var(--body);text-decoration:none;color:var(--muted);transition:color .2s,background .2s}
@@ -257,7 +260,7 @@ a.g-badge:hover{color:#fff;border-color:var(--blue)}
 .open-now i{width:8px;height:8px;border-radius:50%;background:#2fd06b;box-shadow:0 0 10px #2fd06b}
 .open-now.closed i{background:var(--camo);box-shadow:0 0 10px var(--camo)}
 @media (max-width:900px){.reserve{grid-template-columns:1fr}.mapcard{min-height:340px}.reserve > *{min-width:0}}
-@media (max-width:420px){.nav .logo{--h:34px}}
+@media (max-width:420px){.nav .logo{--h:26px}.logo-wrap small{display:none}}
 
 /* filter pills (lookbook) */
 .opt{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);border-radius:10px;padding:11px 8px;font:700 13px/1 var(--mono);cursor:pointer;transition:border-color .15s,background .15s}
@@ -308,7 +311,7 @@ a.g-badge:hover{color:#fff;border-color:var(--blue)}
 .foot-grid a:hover{color:var(--hex)}
 .foot-grid p{color:#b9bfd0;font-size:15px}
 .foot-brand{display:grid;gap:16px;align-content:start}
-.foot-brand .logo{justify-self:start;margin-bottom:6px}
+.foot-brand .word{font:900 clamp(56px,7vw,92px)/.85 var(--display);letter-spacing:.02em}
 .copyable{display:inline-flex;gap:8px;align-items:center}
 .copyable button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:4px 8px;font:600 10px/1 var(--mono);letter-spacing:.1em;cursor:pointer}
 .foot-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font:500 12px/1.5 var(--mono);color:var(--muted)}
